@@ -1,0 +1,87 @@
+https://d.docs.live.net/1986d508e088a602/Documents/Micro_Example.docx
+
+
+
+Kafka tutorial:
+----------------------
+
+https://www.youtube.com/watch?v=jY5fzVCkABg&list=PLxoOrmZMsAWxXBF8h_TPqYJNsh3x4GyO4&index=4
+
+install wsl --install in windows cmd as admin..it will give ubuntu
+first install jdk 11 under opt folder and then
+
+wget https://downloads.apache.org/kafka/3.5.0/kafka_2.12-3.5.0.tgz
+
+tar -xvzf kafka_2.12-3.5.0.tgz(it unzips)
+
+all the below steps are done in home/hari folder
+
+cd config/server.properties
+update to localhost and port
+
+
+Do this to start zookeeper
+----------------------------------
+cd kafka_2.12-3.5.0/
+
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+now open another terminal and run below command
+cd kafka_2.12-3.5.0/
+
+JMX_PORT=8004 bin/kafka-server-start.sh config/server.properties
+
+once kafka started ,run below command in new wsl window and get the ip addr
+ip addr | grep eth0
+copy IP got from above 172.18.9.177
+now open cmd in windows as admin and run below command(this is to forward the requests from windows to wsl)
+
+netsh interface portproxy add v4tov4 listenport=9092 listenaddress=0.0.0.0 connectport=9092 connectaddress=172.18.9.177
+
+copy the same IP in application.properties for spring.kafka.bootstrap-servers ,
+start the server and hit http://localhost:7079/api/v1/kafka/publishMsg?message=phd
+you will see "message sent"in browser
+
+now to see published messages ,install kadeck from https://www.kadeck.com/get-kadeck and launch UI
+
+Used example from https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-kafka/src/main/java/io/reflectoring/kafka
+
+
+now install kafka manager using below url steps
+--------------------------------------------------
+https://www.youtube.com/watch?v=AlQfpG10vAc&list=PLxoOrmZMsAWxXBF8h_TPqYJNsh3x4GyO4&index=4
+
+bin/cmak -Dconfig.file=conf/application.conf -Dhttp.port=8080
+
+
+
+
+
+
+kafka in windows
+-------------------
+STEP 1: DOWNLOAD AND INSTALL KAFKA
+https://dlcdn.apache.org/kafka/3.2.0/...
+
+STEP 2: START THE KAFKA ENVIRONMENT
+# Start the ZooKeeper service
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+
+# Start the Kafka broker service
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+
+STEP 3: CREATE A TOPIC TO STORE YOUR EVENTS
+.\bin\windows\kafka-topics.bat --create --topic topic_demo --bootstrap-server localhost:9092
+
+STEP 4: WRITE SOME EVENTS INTO THE TOPIC
+.\bin\windows\kafka-console-producer.bat --topic topic_demo --bootstrap-server localhost:9092
+
+STEP 5:  READ THE EVENTS
+.\bin\windows\kafka-console-consumer.bat --topic topic_demo --from-beginning --bootstrap-server localhost:9092
+hello world
+topic demo
+
+
+Spring boot with Kafka
+----------------------------
+https://www.youtube.com/playlist?list=PLGRDMO4rOGcNLwoack4ZiTyewUcF6y6BU
